@@ -156,8 +156,9 @@ function handle(client, response) {
     resolveEvalResult(client, response);
   } else if (response.result && response.source) {
     client.emit(response.source, response);
-  } else if (response.id && response.result === null) {
+  } else if (response.source === 'kernelSpecManager') {
     // ignore, they didn't give us a msg_id and that's okay
+    client.emit('jupyter', response);
   } else {
     client.emit('error', new Error('Unknown data object: ' + require('util').inspect(response)));
   }

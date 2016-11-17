@@ -79,9 +79,60 @@ def kernel(wd=None, verbose=0):
     python_patch_file = os.path.join(dirname, "langs", "python-patch.py")
     kernel_client.execute("%run " + python_patch_file, {"silent":True, "store_history":False})
 
+    try:
+      connectionInfo = kernel_client.get_connection_info();
+      kernelInfo = kernel_client.kernel_info()
+
+      sys.stdout.write(json.dumps({
+        "source": "kernelSpecManager",
+        "kernel_client.get_connection_info": connectionInfo,
+        "kernel_client.kernel_info": kernelInfo
+      }) + "\n")
+    except ImportError:
+      sys.stdout.write(json.dumps({ "source": "kernelSpecManager", "error": ie.message }) + "\n")
+
+
+
     # set working directory
     if wd:
         kernel_client.execute("cd %s" % wd)
+
+    #try:
+    #  from jupyter_client.kernelspec import KernelSpec
+    #  sys.stdout.write(json.dumps({ "source": "kernelspec", "spec": KernelSpec.to_json() }) + "\n")
+    #except ImportError as ie:
+    #  sys.stdout.write(json.dumps({ "source": "kernelspec", "error": ie.message }) + "\n")
+
+    try:
+      from jupyter_client import kernelspec
+
+      specs = kernelspec.find_kernel_specs()
+      specList = []
+      for specKey,specValue in specs.items():
+        spec = kernelspec.get_kernel_spec(specKey)
+        specObj = kernelspec.get_kernel_spec(specKey).to_dict()
+        specObj['resources'] = specValue
+        specList.append(specObj)
+
+      sys.stdout.write(json.dumps({
+        "source": "kernelSpecManager",
+        "kernelSpecs": specList,
+      }) + "\n")
+    except ImportError:
+      sys.stdout.write(json.dumps({ "source": "kernelSpecManager", "error": ie.message }) + "\n")
+
+    try:
+      from jupyter_client.kernelspec import KernelSpecManager
+      kernelSpecManager = KernelSpecManager()
+
+      specs = kernelSpecManager.get_all_specs()
+
+      sys.stdout.write(json.dumps({
+        "source": "kernelSpecManager",
+        "specs": specs
+      }) + "\n")
+    except ImportError:
+      sys.stdout.write(json.dumps({ "source": "kernelSpecManager", "error": ie.message }) + "\n")
 
     input_queue = Queue.Queue()
 

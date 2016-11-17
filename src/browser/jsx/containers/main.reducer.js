@@ -8,6 +8,7 @@ import freeTabGroups from './free-tab-group/free-tab-group.reducer';
 import editorTabGroups from './editor-tab-group/editor-tab-group.reducer';
 import preferences from './preferences-viewer/preferences-viewer.reducer';
 import manageConnections from './manage-connections-viewer/manage-connections.reducer';
+import manageKernels from './manage-kernels-viewer/manage-kernels.reducer';
 
 function broadcast(state, action) {
   applicationControl.shareAction(action);
@@ -64,6 +65,10 @@ export default combineReducers({
    * map!
    */
   manageConnections,
+  /**
+   * map!
+   */
+  manageKernels,
   /**
    * Unneeded. This just logs all the actions that pass through.
    */

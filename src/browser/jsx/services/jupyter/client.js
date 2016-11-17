@@ -135,8 +135,6 @@ function execute(instance, code, args) {
 
     if (ms > 250) {
       console.warn(name, ms);
-    } else {
-      console.log(name, ms);
     }
 
     return result;
@@ -210,6 +208,16 @@ function getStatus(instance) {
  */
 function interrupt(instance) {
   return api.send('interrupt', instance);
+}
+
+function getKernelInfo(instance) {
+  return getResult(instance, {
+    method: ''
+  }, '').then(function(result) {
+    console.log('HEY', result);
+
+    return result;
+  });
 }
 
 /**
