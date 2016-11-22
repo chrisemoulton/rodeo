@@ -1,0 +1,20 @@
+
+# Inspired by https://robots.thoughtbot.com/configure-circleci-for-go
+machine:
+  environment:
+
+dependencies:
+  override:
+    - sudo apt-get install -y reprepro s3cmd jq tree
+    - printf "[default]\naccess_key = $ACCESS_KEY\n secret_key = $SECRET_KEY" > ~/.s3cfg
+
+test:
+  override:
+    - echo "test"
+
+deployment:
+  master:
+    tag: /v[0-9]+(\.[0-9]+)*/
+    owner: yhat
+    commands:
+      - bash dist-rodeo-linux.sh
